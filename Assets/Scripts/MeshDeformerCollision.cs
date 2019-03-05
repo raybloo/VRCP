@@ -8,6 +8,7 @@ public class MeshDeformerCollision: MonoBehaviour
 
 	// Public fields
 	public float force = 10f;
+	public float offset = 10f;
 
     // Start is called before the first frame update
     void Start()
@@ -29,21 +30,27 @@ public class MeshDeformerCollision: MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		Debug.Log("Collision");
 		spots.Clear();
-		for (int i = 0; i < collision.contactCount; i++)
+		Vector3 spot;
+		for (int i = 0; i < 1; i++) //collision.contactCount
 		{
-			spots.Add(collision.GetContact(i).point);
+			spot = collision.GetContact(i).point;// + (collision.GetContact(i).normal.normalized * offset);
+			spots.Add(spot);
+			Debug.Log(spot.ToString());
+			Debug.Log((collision.GetContact(i).normal * offset).ToString());
 		}
 	}
 
 	private void OnCollisionStay(Collision collision)
 	{
-		Debug.Log("Collision");
 		spots.Clear();
-		for (int i = 0; i < collision.contactCount; i++)
+		Vector3 spot;
+		for (int i = 0; i < 1; i++)//collision.contactCount
 		{
-			spots.Add(collision.GetContact(i).point);
+			spot = collision.GetContact(i).point;// + (collision.GetContact(i).normal.normalized * offset);
+			spots.Add(spot);
+			Debug.Log(spot.ToString());
+			Debug.Log((collision.GetContact(i).normal * offset).ToString());
 		}
 	}
 
