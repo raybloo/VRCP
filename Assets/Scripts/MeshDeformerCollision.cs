@@ -23,7 +23,7 @@ public class MeshDeformerCollision: MonoBehaviour
         if (deformer) {
 			for(int i = 0; i < spots.Count; i++)
 			{
-				deformer.AddDeformingForce(spots[i], force);
+				deformer.AddDeformingForceWithNormalOffset(spots[i], force);
 			}
         }
     }
@@ -34,10 +34,10 @@ public class MeshDeformerCollision: MonoBehaviour
 		Vector3 spot;
 		for (int i = 0; i < 1; i++) //collision.contactCount
 		{
-			spot = collision.GetContact(i).point;// + (collision.GetContact(i).normal.normalized * offset);
+            spot = collision.GetContact(i).point;// + (collision.GetContact(i).normal * offset);
 			spots.Add(spot);
-			Debug.Log(spot.ToString());
-			Debug.Log((collision.GetContact(i).normal * offset).ToString());
+			//Debug.Log("Point: " + spot.ToString());
+			//Debug.Log("Normal: " + (collision.GetContact(i).normal * offset).ToString());
 		}
 	}
 
@@ -47,10 +47,10 @@ public class MeshDeformerCollision: MonoBehaviour
 		Vector3 spot;
 		for (int i = 0; i < 1; i++)//collision.contactCount
 		{
-			spot = collision.GetContact(i).point;// + (collision.GetContact(i).normal.normalized * offset);
+            spot = collision.GetContact(i).point;// + (collision.GetContact(i).normal * offset);
 			spots.Add(spot);
-			Debug.Log(spot.ToString());
-			Debug.Log((collision.GetContact(i).normal * offset).ToString());
+			//Debug.Log("Point: " + spot.ToString());
+			//Debug.Log("Normal: " + (collision.GetContact(i).normal * offset).ToString());
 		}
 	}
 

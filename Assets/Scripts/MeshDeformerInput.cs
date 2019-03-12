@@ -31,6 +31,7 @@ public class MeshDeformerInput : MonoBehaviour
 			{
 				Vector3 point = hit.point;
 				point += hit.normal * forceOffset;
+                Debug.Log("Point: " + hit.collider.transform.InverseTransformPoint(point).ToString());
 				deformer.AddDeformingForce(point, force);
 			}
 		}
