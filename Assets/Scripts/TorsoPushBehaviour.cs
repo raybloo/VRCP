@@ -22,6 +22,15 @@ public class TorsoPushBehaviour : MonoBehaviour
             if(deformer) {
                 deformer.deformation = (callibOffset - transform.position.y) * callibFactor;
             }
+        } 
+    }
+
+
+    public void ResetDeformation() {
+        MeshDeformerStatic deformer = target.GetComponent<MeshDeformerStatic>();
+        if (deformer) {
+            deformer.deformation = 0.0f;
         }
     }
+
 }

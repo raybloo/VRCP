@@ -6,7 +6,7 @@ public class MeshDeformerStatic : MonoBehaviour
 {
     // Public fields
     public Vector3 point = new Vector3(0.0f,15.3f, 1.7f);
-    public float deformation = 10f;
+    public float deformation = 0.0f;
     public float deformationMax = 10f;
     // Start is called before the first frame update
     void Start()
