@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TorsoPushBehaviour : MonoBehaviour
 {
+    // Public fields
     public float callibFactor = 8.0f/0.5f;
     public float callibOffset = 0.5f;
     public bool active = true;
