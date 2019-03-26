@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class TorsoPushBehaviour : MonoBehaviour
 {
-    // Public fields
-    public float callibFactor = 8.0f/0.5f;
-    public float callibOffset = 0.5f;
+    public float callibFactor = 20.0f/0.5f;
+    public float callibOffset = 0.3f;
     public bool active = true;
     public GameObject target;
     // Start is called before the first frame update
