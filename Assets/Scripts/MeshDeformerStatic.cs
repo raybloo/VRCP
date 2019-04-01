@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MeshDeformerStatic : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class MeshDeformerStatic : MonoBehaviour
     public Vector3 point = new Vector3(0.0f,15.3f, 1.7f);
     public float deformation = 0.0f;
     public float deformationMax = 10f;
+    public Text infoText;
     // Start is called before the first frame update
     void Start()
     {
@@ -77,5 +79,6 @@ public class MeshDeformerStatic : MonoBehaviour
                 }
             }
         }
+        infoText.text = "Rate: "+rate.ToString()+"\n\nAmplitude: "+amplitude.ToString();
     }
 }
