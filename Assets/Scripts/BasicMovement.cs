@@ -27,7 +27,7 @@ public class BasicMovement : MonoBehaviour
 		// Make it move 10 meters per second instead of 10 meters per frame...
 		upDown *= Time.deltaTime;
 		leftRight *= Time.deltaTime;
-		transform.Translate(leftRight, upDown, 0.0f);
+		transform.Translate(leftRight, 0.0f, upDown);
 
 
 	}
