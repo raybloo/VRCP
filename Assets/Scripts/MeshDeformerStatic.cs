@@ -12,6 +12,7 @@ public class MeshDeformerStatic : MonoBehaviour
     private float low = 0.0f;
     private float up = 0.0f;
     private float meanTime = 5.0f;
+    private int pushes = 0;
     private LinkedList<float> timeQ;
     // Public fields
     public Vector3 point = new Vector3(0.0f,15.3f, 1.7f);
@@ -25,6 +26,7 @@ public class MeshDeformerStatic : MonoBehaviour
         rate = 0.0f;
         elapsed = 0.0f;
         amplitude = 0.0f;
+        pushes = 0;
     }
 
     // Update is called once per frame
@@ -70,16 +72,25 @@ public class MeshDeformerStatic : MonoBehaviour
         }
         if(elapsed >= meanTime) {
             rate = 0.0f;
+            pushes = 0;
             timeQ.Clear();
         } else {
             ComputeRate();
         }
         
-        infoText.text = "Rate: "+ Mathf.RoundToInt(rate).ToString()+"\n\nAmplitude: "+amplitude.ToString();
+        infoText.text = "Rate: "+ Mathf.RoundToInt(rate).ToString()+"\nPushes: "+pushes.ToString()+"\nAmplitude: "+(amplitude*1.5f).ToString();
+        if (rate < 20 || amplitude < 1.7) {
+            infoText.color = new Color(255, 0, 0);
+        } else if(rate > 60 && rate <= 110) {
+            infoText.color = new Color(0,255,0);
+        } else {
+            infoText.color = new Color(255, 255, 0);
+        }
     }
 
     private void PushUp() {
-        Debug.Log("One push since: " + elapsed.ToString());
+        //Debug.Log("One push since: " + elapsed.ToString());
+        pushes++;
         amplitude = low - up;
         if(timeQ.Count == 0) {
             timeQ.AddLast(1.0f);
