@@ -12,6 +12,7 @@ public class MeshDeformerStatic : MonoBehaviour
     private float low = 0.0f;
     private float up = 0.0f;
     private float meanTime = 5.0f;
+    private int avgOver = 5;
     private int pushes = 0;
     private LinkedList<float> timeQ;
     // Public fields
@@ -70,51 +71,48 @@ public class MeshDeformerStatic : MonoBehaviour
                 }
             }
         }
-        if(elapsed >= meanTime) {
+        if(elapsed > meanTime) {
             rate = 0.0f;
             pushes = 0;
-            timeQ.Clear();
-        } else {
-            ComputeRate();
         }
-        
-        infoText.text = "Rate: "+ Mathf.RoundToInt(rate).ToString()+"\nPushes: "+pushes.ToString()+"\nAmplitude: "+(amplitude*1.5f).ToString();
-        if (rate < 20 || amplitude < 1.7) {
-            infoText.color = new Color(255, 0, 0);
-        } else if(rate > 60 && rate <= 110) {
-            infoText.color = new Color(0,255,0);
-        } else {
-            infoText.color = new Color(255, 255, 0);
-        }
+        DisplayScore();
     }
 
     private void PushUp() {
         //Debug.Log("One push since: " + elapsed.ToString());
         pushes++;
         amplitude = low - up;
-        if(timeQ.Count == 0) {
-            timeQ.AddLast(1.0f);
+        if(elapsed > meanTime) {
+            timeQ.Clear();
+            rate = 0.0f;
+            pushes = 0;
         } else {
             timeQ.AddFirst(elapsed);
+            ComputeRate();
         }
         elapsed = 0.0f;
         released = true;
     }
 
     private void ComputeRate() {
-        float acc = elapsed;
-        float count = 0.0f;
-        foreach(float t in timeQ) {
-            if(acc < meanTime) {
-                acc += t;
-                count++;
-            }
-        }
-        if (acc >= meanTime) {
+        float acc = 0.0f;
+        while (timeQ.Count > avgOver) {
             timeQ.RemoveLast();
-            rate = 60.0f * count / meanTime;
+        }
+        foreach (float t in timeQ) {
+            acc += t;
+        }
+        rate = 60.0f * ((float)timeQ.Count) / acc;        
+    }
+
+    private void DisplayScore() {
+        infoText.text = "Rate: " + Mathf.RoundToInt(rate).ToString() + "\nPushes: " + pushes.ToString() + "\nAmplitude: " + (amplitude * 1.5f).ToString();
+        if (rate < 20 || amplitude < 1.7) {
+            infoText.color = new Color(255, 0, 0);
+        } else if (rate > 60 && rate <= 110) {
+            infoText.color = new Color(0, 255, 0);
         } else {
-            rate = 60.0f * count / acc;
+            infoText.color = new Color(255, 255, 0);
         }
     }
 }
