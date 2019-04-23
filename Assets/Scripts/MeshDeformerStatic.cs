@@ -20,6 +20,7 @@ public class MeshDeformerStatic : MonoBehaviour
     public float deformation = 0.0f;
     public float deformationMax = 10f;
     public Text infoText;
+    public RawImage indicator;
     // Start is called before the first frame update
     void Start()
     {
@@ -109,10 +110,11 @@ public class MeshDeformerStatic : MonoBehaviour
         infoText.text = "Rate: " + Mathf.RoundToInt(rate).ToString() + "\nPushes: " + pushes.ToString() + "\nAmplitude: " + (amplitude * 1.5f).ToString();
         if (rate < 20 || amplitude < 1.7) {
             infoText.color = new Color(255, 0, 0);
-        } else if (rate > 60 && rate <= 110) {
+        } else if (rate > 60 && rate <= 100) {
             infoText.color = new Color(0, 255, 0);
         } else {
             infoText.color = new Color(255, 255, 0);
         }
+        indicator.rectTransform.localPosition = new Vector3(-0.375f+(rate/200.0f),0.25f,0.0f);
     }
 }
