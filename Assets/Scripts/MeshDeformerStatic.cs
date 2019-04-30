@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class MeshDeformerStatic : MonoBehaviour
 {
     private bool released = true;
-    private float rate = 0.0f;
+    public float rate = 0.0f;
     private float elapsed = 0.0f;
-    private float amplitude = 0.0f;
+    public float amplitude = 0.0f;
     private float low = 0.0f;
     private float up = 0.0f;
     private float meanTime = 5.0f;
@@ -108,13 +108,13 @@ public class MeshDeformerStatic : MonoBehaviour
 
     private void DisplayScore() {
         infoText.text = "Rate: " + Mathf.RoundToInt(rate).ToString() + "\nPushes: " + pushes.ToString() + "\nAmplitude: " + (amplitude * 1.5f).ToString();
-        if (rate < 20 || amplitude < 1.7) {
+        if (rate < 75 || amplitude < 1.7 || rate > 160) {
             infoText.color = new Color(255, 0, 0);
-        } else if (rate > 60 && rate <= 100) {
+        } else if (rate >= 100 && rate < 135) {
             infoText.color = new Color(0, 255, 0);
         } else {
             infoText.color = new Color(255, 255, 0);
         }
-        indicator.rectTransform.localPosition = new Vector3(-0.375f+(rate/200.0f),0.25f,0.0f);
+        indicator.rectTransform.localPosition = new Vector3(-0.375f+Mathf.Min((Mathf.Max(rate-60.0f,0.0f)/150.0f),0.75f),0.25f,0.0f);
     }
 }
