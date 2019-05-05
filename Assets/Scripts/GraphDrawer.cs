@@ -6,16 +6,18 @@ public class GraphDrawer : MonoBehaviour
 {
 
     // Public Fields
-    public LineRenderer lineRenderer;
+    
+    public Vector3 origin = new Vector3(-2.5f, 1.5f, -0.01f);
+    public float widthFactor = 2.0f;
+    public float widthLimit = 6.0f;
+    public float heightFactor = 0.3f;
 
     // Private Fields
+    private LineRenderer lineRenderer;
     private int maxSize = 1000;
     private int size;
     private Vector3[] pos;
-    private float widthFactor = 1.0f;
-    private float widthLimit = 2.0f;
-    private Vector3 origin = new Vector3(1.0f,0.0f,0.0f);
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +29,7 @@ public class GraphDrawer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateGraph(Mathf.Sin(Time.time),Time.deltaTime);
+        //UpdateGraph(Mathf.Sin(Time.time),Time.deltaTime);
     }
 
     void AddPoint(Vector3 point) 
@@ -44,21 +46,22 @@ public class GraphDrawer : MonoBehaviour
 
     void MoveGraph(float offset) 
     {
-        size = Mathf.Min(maxSize, size);
+        //size = Mathf.Min(maxSize, size);
         for(int i = 0; i < size; i++) {
-            pos[i].x -= offset;
-            if(pos[i].x < origin.x-widthLimit) {
-                size = i;
+            pos[i].x += offset*widthFactor;
+            if(pos[i].x > origin.x+widthLimit) {
+                maxSize = size;
             }
         }
+        size = Mathf.Min(maxSize, size);
         lineRenderer.positionCount = size;
         lineRenderer.SetPositions(pos);
     }
 
-    void UpdateGraph(float y, float x) 
+    public void UpdateGraph(float y, float x) 
     {
         MoveGraph(x);
-        AddPoint(new Vector3(origin.x,origin.y+y,origin.z));
+        AddPoint(new Vector3(origin.x,origin.y+(y*heightFactor),origin.z));
     }
 
 }

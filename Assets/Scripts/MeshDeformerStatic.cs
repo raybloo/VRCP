@@ -14,6 +14,7 @@ public class MeshDeformerStatic : MonoBehaviour
     private float meanTime = 5.0f;
     private int avgOver = 5;
     private int pushes = 0;
+    private float amplitudeFactor = 1.5f;
     private LinkedList<float> timeQ;
     // Public fields
     public Vector3 point = new Vector3(0.0f,15.3f, 1.7f);
@@ -21,6 +22,7 @@ public class MeshDeformerStatic : MonoBehaviour
     public float deformationMax = 10f;
     public Text infoText;
     public RawImage indicator;
+    public GraphDrawer graph;
     // Start is called before the first frame update
     void Start()
     {
@@ -107,7 +109,7 @@ public class MeshDeformerStatic : MonoBehaviour
     }
 
     private void DisplayScore() {
-        infoText.text = "Rate: " + Mathf.RoundToInt(rate).ToString() + "\nPushes: " + pushes.ToString() + "\nAmplitude: " + (amplitude * 1.5f).ToString();
+        infoText.text = "Rate: " + Mathf.RoundToInt(rate).ToString() + "\nPushes: " + pushes.ToString() + "\nAmplitude: " + (amplitude * amplitudeFactor).ToString();
         if (rate < 75 || amplitude < 1.7 || rate > 160) {
             infoText.color = new Color(255, 0, 0);
         } else if (rate >= 100 && rate < 135) {
@@ -116,5 +118,8 @@ public class MeshDeformerStatic : MonoBehaviour
             infoText.color = new Color(255, 255, 0);
         }
         indicator.rectTransform.localPosition = new Vector3(-0.375f+Mathf.Min((Mathf.Max(rate-60.0f,0.0f)/150.0f),0.75f),0.25f,0.0f);
+        if(graph) {
+            graph.UpdateGraph(deformation * (-amplitudeFactor), Time.deltaTime);
+        }
     }
 }
