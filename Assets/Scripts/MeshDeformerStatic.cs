@@ -5,6 +5,16 @@ using UnityEngine.UI;
 
 public class MeshDeformerStatic : MonoBehaviour
 {
+    // Public fields
+    public Vector3 point = new Vector3(0.0f,15.3f, 1.7f);
+    public float deformation = 0.0f;
+    public float deformationMax = 10f;
+    public Text infoText;
+    public RawImage indicator;
+    public GraphDrawer graph;
+    public GraphDrawer threshold;
+
+    // Private fields
     private bool released = true;
     public float rate = 0.0f;
     private float elapsed = 0.0f;
@@ -15,14 +25,10 @@ public class MeshDeformerStatic : MonoBehaviour
     private int avgOver = 5;
     private int pushes = 0;
     private float amplitudeFactor = 1.5f;
+    private float thresholdFactor = 0.4f;
+    private float thresholdDelta = 0.2f;
     private LinkedList<float> timeQ;
-    // Public fields
-    public Vector3 point = new Vector3(0.0f,15.3f, 1.7f);
-    public float deformation = 0.0f;
-    public float deformationMax = 10f;
-    public Text infoText;
-    public RawImage indicator;
-    public GraphDrawer graph;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +37,9 @@ public class MeshDeformerStatic : MonoBehaviour
         elapsed = 0.0f;
         amplitude = 0.0f;
         pushes = 0;
+        if(graph) {
+            graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
+        }
     }
 
     // Update is called once per frame
@@ -39,7 +48,30 @@ public class MeshDeformerStatic : MonoBehaviour
         LinearMeshDeformer deformer = GetComponent<LinearMeshDeformer>();
         if (deformer) {
             elapsed += Time.deltaTime;
-            if(deformation > deformationMax) {
+            deformer.AddDeformingForce(transform.TransformPoint(point), deformation);
+            if (released) {
+                if (deformation > deformationMax * thresholdFactor) { //threshold exceeded, start of a new compression
+                    released = false;
+                    thresholdFactor -= thresholdDelta;
+                    graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
+                    low = deformation;
+                } else {
+                    up = Mathf.Min(up, deformation);
+                }
+            } else {
+                if (deformation > deformationMax * thresholdFactor) {
+                    low = Mathf.Max(low, deformation);
+                } else { //within threshold again, end of the compression
+                    PushUp();
+                    thresholdFactor += thresholdDelta;
+                    graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
+                    up = deformation;
+                }
+            }
+
+
+            /*
+            if (deformation > deformationMax) {
                 deformer.AddDeformingForce(transform.TransformPoint(point), deformationMax);
                 if (released) {
                     released = false;
@@ -49,7 +81,7 @@ public class MeshDeformerStatic : MonoBehaviour
                 }
             } else if(deformation > 0.0f) {
                 deformer.AddDeformingForce(transform.TransformPoint(point), deformation);
-                if(deformation > deformationMax/4.0f) {
+                if(deformation > deformationMax * thresholdFactor) {
                     if(released) {
                         released = false;
                         low = deformation;
@@ -72,9 +104,10 @@ public class MeshDeformerStatic : MonoBehaviour
                 } else {
                     up = 0.0f;
                 }
-            }
+            }*/
         }
-        if(elapsed > meanTime) {
+
+        if (elapsed > meanTime) {
             rate = 0.0f;
             pushes = 0;
         }
@@ -119,7 +152,7 @@ public class MeshDeformerStatic : MonoBehaviour
         }
         indicator.rectTransform.localPosition = new Vector3(-0.375f+Mathf.Min((Mathf.Max(rate-60.0f,0.0f)/150.0f),0.75f),0.25f,0.0f);
         if(graph) {
-            graph.UpdateGraph(deformation * (-amplitudeFactor), Time.deltaTime);
+            graph.UpdateGraph(deformation * amplitudeFactor, Time.deltaTime);
         }
     }
 }

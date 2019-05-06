@@ -11,6 +11,8 @@ public class GraphDrawer : MonoBehaviour
     public float widthFactor = 2.0f;
     public float widthLimit = 6.0f;
     public float heightFactor = 0.3f;
+    public float thresholdValue;
+    public LineRenderer threshold;
 
     // Private Fields
     private LineRenderer lineRenderer;
@@ -24,6 +26,11 @@ public class GraphDrawer : MonoBehaviour
         size = 0;
         pos = new Vector3[maxSize];
         lineRenderer = GetComponent<LineRenderer>();
+        if(threshold) {
+            Vector3[] t_pos = new Vector3[] { new Vector3(origin.x, origin.y - thresholdValue, origin.z), new Vector3(origin.x + widthLimit, origin.y - thresholdValue, origin.z) };
+            threshold.positionCount = 2;
+            threshold.SetPositions(t_pos);
+        }
     }
 
     // Update is called once per frame
@@ -61,7 +68,17 @@ public class GraphDrawer : MonoBehaviour
     public void UpdateGraph(float y, float x) 
     {
         MoveGraph(x);
-        AddPoint(new Vector3(origin.x,origin.y+(y*heightFactor),origin.z));
+        AddPoint(new Vector3(origin.x,origin.y-(y*heightFactor),origin.z));
+    }
+
+    public void UpdateThreshold(float newVal) 
+    {
+        thresholdValue = newVal;
+        if (threshold) {
+            Vector3[] t_pos = new Vector3[] { new Vector3(origin.x, origin.y - (thresholdValue * heightFactor), origin.z), new Vector3(origin.x + widthLimit, origin.y - (thresholdValue * heightFactor), origin.z) };
+            threshold.positionCount = 2;
+            threshold.SetPositions(t_pos);
+        }
     }
 
 }

@@ -20,7 +20,7 @@ public class TorsoPushBehaviour : MonoBehaviour
         if (active) {
             MeshDeformerStatic deformer = target.GetComponent<MeshDeformerStatic>();
             if(deformer) {
-                deformer.deformation = (callibOffset - transform.position.y) * callibFactor;
+                deformer.deformation = Mathf.Min(Mathf.Max(callibOffset - transform.position.y,0.0f) * callibFactor, deformer.deformationMax);
             }
         } 
     }
