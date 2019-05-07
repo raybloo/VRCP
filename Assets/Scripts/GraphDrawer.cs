@@ -10,7 +10,7 @@ public class GraphDrawer : MonoBehaviour
     public Vector3 origin = new Vector3(-2.5f, 1.5f, -0.01f);
     public float widthFactor = 2.0f;
     public float widthLimit = 6.0f;
-    public float heightFactor = 0.3f;
+    public float heightFactor = 0.6f;
     public float thresholdValue;
     public LineRenderer threshold;
 

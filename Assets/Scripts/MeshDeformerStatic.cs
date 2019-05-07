@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class MeshDeformerStatic : MonoBehaviour
 {
     // Public fields
+    public float rate = 0.0f;
+    public float amplitude = 0.0f;
     public Vector3 point = new Vector3(0.0f,15.3f, 1.7f);
     public float deformation = 0.0f;
     public float deformationMax = 10f;
@@ -16,15 +18,13 @@ public class MeshDeformerStatic : MonoBehaviour
 
     // Private fields
     private bool released = true;
-    public float rate = 0.0f;
     private float elapsed = 0.0f;
-    public float amplitude = 0.0f;
     private float low = 0.0f;
     private float up = 0.0f;
     private float meanTime = 5.0f;
     private int avgOver = 5;
     private int pushes = 0;
-    private float amplitudeFactor = 1.5f;
+    private float amplitudeFactor = 0.75f;
     private float thresholdFactor = 0.4f;
     private float thresholdDelta = 0.2f;
     private LinkedList<float> timeQ;
