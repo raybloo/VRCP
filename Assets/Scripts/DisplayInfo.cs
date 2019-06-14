@@ -12,7 +12,7 @@ public class DisplayInfo : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.position -= new Vector3(100.0f, 0.0f, 0.0f);
+        Hide();
     }
 
     // Update is called once per frame
@@ -33,7 +33,7 @@ public class DisplayInfo : MonoBehaviour
         }
         timer = time;
         infoText.text = text;
-        transform.position += new Vector3(100.0f, 0.0f, 0.0f);
+        Show();
         displaying = true;
         return true;
     }
@@ -44,14 +44,14 @@ public class DisplayInfo : MonoBehaviour
         }
         timer = -8.0f;
         infoText.text = text;
-        transform.position += new Vector3(100.0f,0.0f,0.0f);
+        Show();
         displaying = true;
         return true;
     }
 
     public void StopDisplaying() {
         if(displaying) {
-            transform.position -= new Vector3(100.0f, 0.0f, 0.0f);
+            Hide();
             displaying = false;
         }
     }
@@ -60,5 +60,14 @@ public class DisplayInfo : MonoBehaviour
         if (displaying) {
             timer = time;
         }
+    }
+    void Hide() {
+        GetComponent<CanvasGroup>().alpha = 0f;
+        //transform.position -= new Vector3(100.0f, 0.0f, 0.0f);
+    }
+
+    void Show() {
+        GetComponent<CanvasGroup>().alpha = 1f;
+        //transform.position += new Vector3(100.0f,0.0f,0.0f);
     }
 }

@@ -21,7 +21,7 @@ public class MenuBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        //HideGraph();
     }
 
     // Update is called once per frame
@@ -96,11 +96,13 @@ public class MenuBehaviour : MonoBehaviour
     void HideGraph() {
         if(graph) {
             if (graphIsHidden) {
-                graph.transform.position -= new Vector3(100.0f,0.0f,0.0f);
+                //graph.transform.position -= new Vector3(100.0f,0.0f,0.0f);
+                graph.GetComponent<CanvasGroup>().alpha = 1f;
                 graphIsHidden = false;
                 menuText.text = "Hide Graph";
             } else {
-                graph.transform.position += new Vector3(100.0f, 0.0f, 0.0f);
+                //graph.transform.position += new Vector3(100.0f, 0.0f, 0.0f);
+                graph.GetComponent<CanvasGroup>().alpha = 0f;
                 graphIsHidden = true;
                 menuText.text = "Show Graph";
             }
