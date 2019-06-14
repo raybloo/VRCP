@@ -6,7 +6,7 @@ public class BasicMovement : MonoBehaviour
 {
 
 	// Public Fields
-	public float speed = 1.0f;
+	public float speed = 0.001f;
 	public float rotationSpeed = 100.0f;
 
 	// Start is called before the first frame update
