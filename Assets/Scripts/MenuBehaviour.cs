@@ -98,11 +98,13 @@ public class MenuBehaviour : MonoBehaviour
             if (graphIsHidden) {
                 //graph.transform.position -= new Vector3(100.0f,0.0f,0.0f);
                 graph.GetComponent<CanvasGroup>().alpha = 1f;
+                graph.GetComponentInChildren<GraphDrawer>().hidden = false;
                 graphIsHidden = false;
                 menuText.text = "Hide Graph";
             } else {
                 //graph.transform.position += new Vector3(100.0f, 0.0f, 0.0f);
                 graph.GetComponent<CanvasGroup>().alpha = 0f;
+                graph.GetComponentInChildren<GraphDrawer>().hidden = true;
                 graphIsHidden = true;
                 menuText.text = "Show Graph";
             }
