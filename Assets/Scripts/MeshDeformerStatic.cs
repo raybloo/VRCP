@@ -12,22 +12,34 @@ public class MeshDeformerStatic : MonoBehaviour
     public float deformation = 0.0f;
     public float deformationMax = 10f;
     public Text infoText;
+    public DisplayInfo display;
+    public TimerBehaviour timer;
     public RawImage indicator;
     public GraphDrawer graph;
     public GraphDrawer threshold;
 
     // Private fields
+    private bool starting = false;
+    private bool simulating = false;
+    private bool training = true;
     private bool released = true;
     private float elapsed = 0.0f;
+    private float interval = 0.0f;
     private float low = 0.0f;
     private float up = 0.0f;
-    private float meanTime = 5.0f;
+    private float meanTime = 2.0f;
     private int avgOver = 5;
-    private int pushes = 0;
+    private int streak = 0;
     private float amplitudeFactor = 0.75f;
     private float thresholdFactor = 0.4f;
     private float thresholdDelta = 0.2f;
     private LinkedList<float> timeQ;
+
+    private float totalTime = 0.0f;
+    private float totalAmplitude = 0.0f;
+    private float maxElapsedTime = 0.0f;
+    private int longestStreak = 0;
+    private int totalPushes = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +48,7 @@ public class MeshDeformerStatic : MonoBehaviour
         rate = 0.0f;
         elapsed = 0.0f;
         amplitude = 0.0f;
-        pushes = 0;
+        streak = 0;
         if(graph) {
             graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
         }
@@ -109,23 +121,44 @@ public class MeshDeformerStatic : MonoBehaviour
 
         if (elapsed > meanTime) {
             rate = 0.0f;
-            pushes = 0;
+            streak = 0;
         }
-        DisplayScore();
+        if(simulating || training) {
+            DisplayScore();
+        }
     }
 
     private void PushUp() {
         //Debug.Log("One push since: " + elapsed.ToString());
-        pushes++;
+        streak++;
         amplitude = low - up;
         if(elapsed > meanTime) {
             timeQ.Clear();
             rate = 0.0f;
-            pushes = 0;
+            streak = 0;
         } else {
             timeQ.AddFirst(elapsed);
             ComputeRate();
         }
+        if (simulating) {
+            totalTime += elapsed;
+            totalAmplitude += amplitude;
+            maxElapsedTime = Mathf.Max(maxElapsedTime,elapsed);
+            longestStreak = Mathf.Max(longestStreak, streak);
+            totalPushes++;
+        }
+        if(starting) {
+            display.StopDisplaying();
+            timer.StartTimer(60.0f);
+            starting = false;
+            simulating = true;
+            totalTime = 0.0f; //totaltime will be divided by the number of compression
+            totalAmplitude = 0.0f;
+            maxElapsedTime = 0.0f;
+            longestStreak = 0;
+            totalPushes = 0;
+        }
+        interval = elapsed;
         elapsed = 0.0f;
         released = true;
     }
@@ -141,8 +174,31 @@ public class MeshDeformerStatic : MonoBehaviour
         rate = 60.0f * ((float)timeQ.Count) / acc;        
     }
 
+    public void StartOnNextPush() {
+        display.Display("The timer will start on the first compression,\n Good Luck!");
+        starting = true;
+    }
+
+    public void EndOfSimulation() {
+        simulating = false;
+        float rateAvg = (float) totalPushes * 60.0f / totalTime;
+        float amplitudeAvg = totalAmplitude * amplitudeFactor / (float) totalPushes;
+        display.Display("Well done, you managed "+totalPushes+" compressions at an average rate of "
+            +rateAvg.ToString("###.") + " and an average amplitude of "+amplitudeAvg.ToString(".00")+". The longest interval mesured between two pushes was "+maxElapsedTime.ToString(".00") +
+            ". Your longest streak without pause was "+longestStreak);
+    }
+
+    public void StartTraining() {
+        training = true;
+    }
+
+    public void StopTraining() {
+        training = false;
+    }
+
+
     private void DisplayScore() {
-        infoText.text = "Rate: " + Mathf.RoundToInt(rate).ToString() + "\nPushes: " + pushes.ToString() + "\nAmplitude: " + (amplitude * amplitudeFactor).ToString();
+        infoText.text = "Rate: " + Mathf.RoundToInt(rate).ToString() + " c/min\nAmplitude: " + (amplitude * amplitudeFactor).ToString("0.00") + " cm\nPushes in a row: " + streak.ToString() + "\nLast interval: " + interval.ToString("0.00") + " sec";
         if (rate < 75 || amplitude < 1.7 || rate > 160) {
             infoText.color = new Color(255, 0, 0);
         } else if (rate >= 100 && rate < 135) {

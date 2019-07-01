@@ -15,7 +15,9 @@ public class GraphDrawer : MonoBehaviour
     public float heightFactor = 0.6f;
     public float thresholdValue;
     public LineRenderer threshold;
-    public string LogPath = "Assets/Logs/massageLog.csv"; 
+    public string LogPath = "Assets/Logs/massageLog.csv";
+    public bool logging = false;
+    public bool hidden = false;
 
     // Private Fields
     private LineRenderer lineRenderer;
@@ -74,11 +76,18 @@ public class GraphDrawer : MonoBehaviour
 
     public void UpdateGraph(float y, float x) 
     {
-        //MoveGraph(x);
-        AddPoint(new Vector3(origin.x,origin.y-(y*heightFactor),origin.z),x);
-        //size = Mathf.Min(maxSize, size);
-        lineRenderer.positionCount = size;
-        lineRenderer.SetPositions(pos);
+        AddPoint(new Vector3(origin.x, origin.y - (y * heightFactor), origin.z), x);
+        if (!hidden) {
+            //MoveGraph(x);
+            //size = Mathf.Min(maxSize, size);
+            UpdateThreshold(thresholdValue);
+            lineRenderer.positionCount = size;
+            lineRenderer.SetPositions(pos);
+        } else {
+            lineRenderer.positionCount = 0;
+            threshold.positionCount = 0;
+        }
+        
         Log(y);
     }
 
@@ -86,14 +95,20 @@ public class GraphDrawer : MonoBehaviour
     {
         thresholdValue = newVal;
         if (threshold) {
-            Vector3[] t_pos = new Vector3[] { new Vector3(origin.x, origin.y - (thresholdValue * heightFactor), origin.z), new Vector3(origin.x - widthLimit, origin.y - (thresholdValue * heightFactor), origin.z) };
-            threshold.positionCount = 2;
-            threshold.SetPositions(t_pos);
+            if (!hidden) {
+                Vector3[] t_pos = new Vector3[] { new Vector3(origin.x, origin.y - (thresholdValue * heightFactor), origin.z), new Vector3(origin.x - widthLimit, origin.y - (thresholdValue * heightFactor), origin.z) };
+                threshold.positionCount = 2;
+                threshold.SetPositions(t_pos);
+            } else {
+                threshold.positionCount = 0;
+            }
         }
     }
 
     public void Log(float value) {
-        logWriter.WriteLine(Time.time+","+value);
+        if (logging) {
+            logWriter.WriteLine(Time.time + "," + value);
+        }
     }
 
 }
