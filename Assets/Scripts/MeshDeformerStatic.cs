@@ -53,7 +53,7 @@ public class MeshDeformerStatic : MonoBehaviour
                 if (deformation > deformationMax * thresholdFactor) { //threshold exceeded, start of a new compression
                     released = false;
                     thresholdFactor -= thresholdDelta;
-                    graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
+                    if (graph) graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
                     low = deformation;
                 } else {
                     up = Mathf.Min(up, deformation);
@@ -64,7 +64,7 @@ public class MeshDeformerStatic : MonoBehaviour
                 } else { //within threshold again, end of the compression
                     PushUp();
                     thresholdFactor += thresholdDelta;
-                    graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
+                    if (graph) graph.UpdateThreshold(deformationMax * thresholdFactor * amplitudeFactor);
                     up = deformation;
                 }
             }
