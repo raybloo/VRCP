@@ -30,9 +30,9 @@ public class MeshDeformerStatic : MonoBehaviour
     private float meanTime = 2.0f;
     private int avgOver = 5;
     private int streak = 0;
-    private float amplitudeFactor = 0.75f;
-    private float thresholdFactor = 0.4f;
-    private float thresholdDelta = 0.2f;
+    private float amplitudeFactor = 0.9f;
+    private float thresholdFactor = 0.35f;
+    private float thresholdDelta = 0.15f;
     private LinkedList<float> timeQ;
 
     private float totalTime = 0.0f;
@@ -149,7 +149,8 @@ public class MeshDeformerStatic : MonoBehaviour
         }
         if(starting) {
             display.StopDisplaying();
-            timer.StartTimer(60.0f);
+            timer.StartTimer(120.0f);
+            graph.logging = true;
             starting = false;
             simulating = true;
             totalTime = 0.0f; //totaltime will be divided by the number of compression
@@ -180,6 +181,7 @@ public class MeshDeformerStatic : MonoBehaviour
     }
 
     public void EndOfSimulation() {
+        graph.logging = false;
         simulating = false;
         float rateAvg = (float) totalPushes * 60.0f / totalTime;
         float amplitudeAvg = totalAmplitude * amplitudeFactor / (float) totalPushes;

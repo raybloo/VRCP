@@ -12,14 +12,16 @@ public class GraphDrawer : MonoBehaviour
     public Vector3 origin = new Vector3(-2.5f, 1.5f, -0.01f);
     public float widthFactor = 2.0f;
     public float widthLimit = 6.0f;
-    public float heightFactor = 0.6f;
+    public float heightFactor = 0.45f;
     public float thresholdValue;
     public LineRenderer threshold;
-    public string LogPath = "Assets/Logs/massageLog.csv";
+    public SensorMeasure sensor;
+    public string LogPath;
     public bool logging = false;
     public bool hidden = false;
 
     // Private Fields
+    private float displayHeightFactor;
     private LineRenderer lineRenderer;
     private int maxSize = 10000;
     private int size;
@@ -29,6 +31,7 @@ public class GraphDrawer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LogPath = "Assets/Logs/massage_"+ System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".csv";
         size = 0;
         pos = new Vector3[maxSize];
         lineRenderer = GetComponent<LineRenderer>();
@@ -107,7 +110,7 @@ public class GraphDrawer : MonoBehaviour
 
     public void Log(float value) {
         if (logging) {
-            logWriter.WriteLine(Time.time + "," + value);
+            logWriter.WriteLine(Time.time + "," + value + "," +sensor.display_value);
         }
     }
 
