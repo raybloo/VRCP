@@ -16,7 +16,7 @@ public class GraphDrawer : MonoBehaviour
     public float thresholdValue;
     public LineRenderer threshold;
     public SensorMeasure sensor;
-    public string LogPath;
+    public string logPath;
     public bool logging = false;
     public bool hidden = false;
 
@@ -31,7 +31,8 @@ public class GraphDrawer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LogPath = "Assets/Logs/massage_"+ System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".csv";
+        //logPath = "Assets/Logs/massage_"+ System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".csv";
+        logPath = "Assets/Logs/massage_log.csv";
         size = 0;
         pos = new Vector3[maxSize];
         lineRenderer = GetComponent<LineRenderer>();
@@ -40,7 +41,7 @@ public class GraphDrawer : MonoBehaviour
             threshold.positionCount = 2;
             threshold.SetPositions(t_pos);
         }
-        logWriter = new StreamWriter(LogPath,false);
+        logWriter = new StreamWriter(logPath,false);
     }
 
     // Update is called once per frame
@@ -51,7 +52,7 @@ public class GraphDrawer : MonoBehaviour
 
     private void OnApplicationQuit() {
         logWriter.Close();
-        AssetDatabase.ImportAsset(LogPath);
+        AssetDatabase.ImportAsset(logPath);
     }
 
     void AddPoint(Vector3 point,float offset) 
@@ -108,9 +109,20 @@ public class GraphDrawer : MonoBehaviour
         }
     }
 
+    public void StartLogging() {
+        logging = true;
+        sensor.logging = true;
+    }
+
+    public void StopLogging() {
+        logging = false;
+        sensor.logging = false;
+    }
+
     public void Log(float value) {
         if (logging) {
-            logWriter.WriteLine(Time.time + "," + value + "," +sensor.display_value);
+            float time = (System.DateTime.Now - sensor.start).Ticks * 0.0000001f;
+            logWriter.WriteLine(time + "," + value + "," +sensor.display_value);
         }
     }
 

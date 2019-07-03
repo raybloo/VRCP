@@ -16,7 +16,6 @@ public class MeshDeformerStatic : MonoBehaviour
     public TimerBehaviour timer;
     public RawImage indicator;
     public GraphDrawer graph;
-    public GraphDrawer threshold;
 
     // Private fields
     private bool starting = false;
@@ -150,7 +149,7 @@ public class MeshDeformerStatic : MonoBehaviour
         if(starting) {
             display.StopDisplaying();
             timer.StartTimer(120.0f);
-            graph.logging = true;
+            graph.StartLogging();
             starting = false;
             simulating = true;
             totalTime = 0.0f; //totaltime will be divided by the number of compression
@@ -181,7 +180,7 @@ public class MeshDeformerStatic : MonoBehaviour
     }
 
     public void EndOfSimulation() {
-        graph.logging = false;
+        graph.StopLogging();
         simulating = false;
         float rateAvg = (float) totalPushes * 60.0f / totalTime;
         float amplitudeAvg = totalAmplitude * amplitudeFactor / (float) totalPushes;
